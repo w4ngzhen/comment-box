@@ -1,0 +1,52 @@
+@import "../../styles/var";
+
+.@{prefix}_comment {
+  width: 100%;
+  display: flex;
+
+  &-avatar {
+    padding-right: 8px;
+
+    img {
+      position: sticky;
+      top: 8px;
+      width: 40px;
+      height: 40px;
+      border-radius: 30%;
+    }
+  }
+
+  &-pane {
+    &-header {
+      position: sticky;
+      //background: white;
+      //top: 0;
+      padding-top: 4px;
+      line-height: 16px;
+      display: flex;
+      align-items: baseline;
+
+      &-name {
+        font-size: 16px;
+        display: block;
+        text-decoration: none;
+        color: #000;
+      }
+
+      &-datetime {
+        display: block;
+        font-size: 10px;
+        color: #333;
+        margin-left: 4px;
+      }
+    }
+
+    &-content {
+      margin-top: 4px;
+      //border-radius: 2px 16px 16px 16px;
+      padding: 0 8px 8px 0;
+      font-size: 14px;
+      color: #333;
+    }
+  }
+}
