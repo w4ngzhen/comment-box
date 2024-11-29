@@ -22,6 +22,7 @@ export interface IssueComment {
     html_url: string;
     avatar_url: string;
   };
+  html_url: string;
   body_html: string;
   body_text: string;
   body: string;

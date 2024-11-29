@@ -11,6 +11,9 @@ import {
 import { OptionsContext } from '../../contexts/OptionsContext';
 import { cls } from '../../utils';
 import * as dayjs from 'dayjs';
+import * as relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 
 const baseClass = baseClassSupplier('comment');
 
@@ -22,26 +25,31 @@ interface CommentProps {
 export const Comment = (props: CommentProps) => {
   const { issueComment, className } = props;
   const { commentContentRenderStyle } = useContext(OptionsContext);
-  const { user, updated_at, created_at, reactions, body_html, body_text } =
-    issueComment;
+  const {
+    user,
+    updated_at,
+    created_at,
+    reactions,
+    body_html,
+    body_text,
+    html_url: commentUrl,
+  } = issueComment;
   const { avatar_url, login: userName, html_url: userUrl } = user;
 
   const time = useMemo(() => {
-    const formatStr = 'YYYY/MM/DD HH:mm:ss';
-    let updateTimeStr = dayjs(updated_at).format(formatStr);
-    if (updated_at === created_at) {
-      // 没有更新过
-      return updateTimeStr;
-    } else {
-      const createdTime = dayjs(created_at);
-      return `${createdTime.format(formatStr)} (updated at: ${updateTimeStr})`;
-    }
+    const updateTimeStr = dayjs(updated_at).fromNow();
+    return `${updateTimeStr}${updated_at !== created_at ? ' (edited)' : ''}`;
   }, [created_at, updated_at]);
 
   return (
     <div className={cls(baseClass(), className)}>
       <div className={baseClass('avatar')}>
-        <img src={avatar_url} alt={'user avatar'} />
+        <img
+          src={avatar_url}
+          alt={'user avatar'}
+          title={userUrl}
+          onClick={() => window.open(userUrl)}
+        />
       </div>
       <div className={baseClass('pane')}>
         <div className={baseClass('pane-header')}>
@@ -52,7 +60,14 @@ export const Comment = (props: CommentProps) => {
           >
             {userName}
           </a>
-          <div className={baseClass('pane-header-datetime')}>{time}</div>
+          <a
+            className={baseClass('pane-header-datetime')}
+            href={commentUrl}
+            target="_blank"
+            title={commentUrl}
+          >
+            {time}
+          </a>
         </div>
         <div className={baseClass('pane-content')}>
           <CommentContent

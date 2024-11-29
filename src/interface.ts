@@ -40,17 +40,4 @@ interface Options {
    * @defaultValue pure
    */
   commentContentRenderStyle?: 'pure' | 'rich' | 'both';
-  // /**
-  //  * 评论时间显示配置
-  //  * createdTime：始终使用创建时间
-  //  * updatedTime: 始终使用更新时间
-  //  * both: ${创建时间}（updated at: ${更新时间}）
-  //  */
-  // commentTimeDisplay?: 'createdTime' | 'updatedTime' | 'both';
-  // /**
-  //  * 评论时间显示是否使用相对形式展示，形如：
-  //  * "1 year ago"
-  //  * @defaultValue true
-  //  */
-  // commentTimeRelated?: boolean;
 }
