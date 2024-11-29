@@ -39,5 +39,18 @@ interface Options {
    * 当使用 both 时，每条评论的UI上会显示切换按钮用于用户按照喜好进行切换
    * @defaultValue pure
    */
-  commentRenderStyle?: 'pure' | 'rich' | 'both';
+  commentContentRenderStyle?: 'pure' | 'rich' | 'both';
+  // /**
+  //  * 评论时间显示配置
+  //  * createdTime：始终使用创建时间
+  //  * updatedTime: 始终使用更新时间
+  //  * both: ${创建时间}（updated at: ${更新时间}）
+  //  */
+  // commentTimeDisplay?: 'createdTime' | 'updatedTime' | 'both';
+  // /**
+  //  * 评论时间显示是否使用相对形式展示，形如：
+  //  * "1 year ago"
+  //  * @defaultValue true
+  //  */
+  // commentTimeRelated?: boolean;
 }

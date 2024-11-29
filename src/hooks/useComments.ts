@@ -35,7 +35,7 @@ export interface IssueComment {
 
 export const useComments = () => {
   const opts = useContext(OptionsContext);
-  const { owner, repo, issueKey, commentRenderStyle } = opts;
+  const { owner, repo, issueKey, commentContentRenderStyle } = opts;
   const [initLoading, setInitLoading] = useState<boolean>(false);
   const [initError, setInitError] = useState<string>(undefined);
 
@@ -85,21 +85,18 @@ export const useComments = () => {
     return Math.ceil(issueInfo.comments / opts.commentPageSize);
   }, [opts.commentPageSize, issueInfo]);
 
+  /**
+   * 无状态函数
+   * @param pageNumber
+   */
   const requestComments = async (pageNumber: number) => {
-    if (
-      !issueInfo ||
-      initLoading ||
-      initError ||
-      pageNumber > totalPageNumber
-    ) {
-      return;
-    }
+    setCommentLoading(true);
     const apiUrl = `${issueInfo.comments_url}?page=${pageNumber}&per_page=${opts.commentPageSize}`;
     try {
       let accept: string;
-      if (commentRenderStyle === 'both') {
+      if (commentContentRenderStyle === 'both') {
         accept = 'application/vnd.github.full+json';
-      } else if (commentRenderStyle === 'rich') {
+      } else if (commentContentRenderStyle === 'rich') {
         accept = 'application/vnd.github.html+json';
       } else {
         // 兜底用纯文本
@@ -116,6 +113,8 @@ export const useComments = () => {
       setComments(await resp.json());
     } catch (e) {
       setComments([]);
+    } finally {
+      setCommentLoading(false);
     }
   };
 

@@ -1,0 +1,38 @@
+@import "../../../styles/var";
+
+.@{prefix}_pagination {
+  display: flex;
+  align-items: center;
+
+  &-item {
+    font-size: 14px;
+    color: #333;
+    padding: 2px 8px;
+    display: inline-flex;
+    justify-content: center;
+
+    &:hover {
+      cursor: pointer
+    }
+
+    &:not(:last-child) {
+      margin-right: 8px;
+    }
+
+    &-activated {
+      color: #333;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    &-disabled {
+      color: #999;
+
+      &:hover {
+        cursor: not-allowed;
+      }
+    }
+  }
+
+
+}

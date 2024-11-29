@@ -22,7 +22,7 @@ export function init(mountEle: string, opts: Options) {
   if (!validateNonEmpty(['owner', 'clientId', 'issueKey', 'repo'])) {
     return;
   }
-  console.debug('准备挂载 CommentBox 实例');
+  console.debug('Prepare mount CommentBox instant');
   render(
     <CommentBoxComponent options={opts} />,
     document.querySelector(mountEle || '#comment-box'),
@@ -34,5 +34,6 @@ init('#comment-box', {
   issueKey: 'test',
   owner: 'w4ngzhen',
   repo: 'blog',
-  commentRenderStyle: 'pure',
+  commentContentRenderStyle: 'pure',
+  commentPageSize: 2,
 });

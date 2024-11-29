@@ -1,6 +1,21 @@
 const path = require('node:path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const BundleAnalyzerPlugin =
+  require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
+const optimizeConfig = () => {
+  if (process.env.mode === 'production') {
+    return {
+      minimize: true,
+    };
+  } else {
+    return {
+      minimize: false,
+    };
+  }
+};
+
 module.exports = {
   mode: 'development',
   entry: {
@@ -38,7 +53,12 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'comment-box.css',
     }),
+    new BundleAnalyzerPlugin({
+      openAnalyzer: false,
+      analyzerPort: 7777, // 包体积分析用7777端口呈现
+    }),
   ],
+  optimization: optimizeConfig(),
   devServer: {
     port: 8080,
   },
