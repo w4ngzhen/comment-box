@@ -1,4 +1,4 @@
-import { IssueComment } from '../../hooks/useComments';
+import { CommentReactionsKey, IssueComment } from '../../hooks/useComments';
 import './index.less';
 import { baseClassSupplier } from '../../styles/class-utils';
 import {
@@ -20,7 +20,14 @@ const baseClass = baseClassSupplier('comment');
 interface CommentProps {
   issueComment: IssueComment;
   className?: string;
+  onReactionClick?: (key: CommentReactionsKey) => void;
 }
+
+const REACTION_ICONS: Record<CommentReactionsKey, string> = {
+  '+1': '👍',
+  heart: '❤️',
+  confused: '😕',
+};
 
 export const Comment = (props: CommentProps) => {
   const { issueComment, className } = props;
@@ -75,6 +82,23 @@ export const Comment = (props: CommentProps) => {
             textStr={body_text}
             htmlStr={body_html}
           />
+        </div>
+        <div className={baseClass('pane-reactions')}>
+          {Object.keys(REACTION_ICONS).map((reaction) => {
+            return (
+              <span
+                className={baseClass('pane-reactions-item')}
+                onClick={() => {
+                  confirm('');
+                }}
+              >
+                {REACTION_ICONS[reaction]}
+                <span className={baseClass('pane-reactions-item-count')}>
+                  {reactions[reaction]}
+                </span>
+              </span>
+            );
+          })}
         </div>
       </div>
     </div>

@@ -31,8 +31,11 @@ export interface IssueComment {
   reactions: {
     '+1': number;
     heart: number;
+    confused: number;
   };
 }
+
+export type CommentReactionsKey = keyof IssueComment['reactions'];
 
 export const useComments = () => {
   const opts = useContext(OptionsContext);
