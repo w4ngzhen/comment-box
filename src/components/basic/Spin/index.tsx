@@ -2,6 +2,7 @@ import { CSSProperties } from 'preact/compat';
 import { cls } from '../../../utils';
 import { baseClassSupplier } from '../../../styles/class-utils';
 import './index.less';
+import { IconLoading } from '../icons/IconLoading';
 
 const baseCls = baseClassSupplier('spin');
 
@@ -13,7 +14,7 @@ export function Spin(props: { className?: string; style?: CSSProperties }) {
         ...(props.style || {}),
       }}
     >
-      <div className={baseCls('loader')} />
+      <IconLoading />
     </div>
   );
 }

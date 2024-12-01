@@ -58,17 +58,17 @@ export const Comment = (props: CommentProps) => {
           onClick={() => window.open(userUrl)}
         />
       </div>
-      <div className={baseClass('pane')}>
-        <div className={baseClass('pane-header')}>
+      <div className={baseClass('panel')}>
+        <div className={baseClass('panel-header')}>
           <a
-            className={baseClass('pane-header-name')}
+            className={baseClass('panel-header-name')}
             href={userUrl}
             target="_blank"
           >
             {userName}
           </a>
           <a
-            className={baseClass('pane-header-datetime')}
+            className={baseClass('panel-header-datetime')}
             href={commentUrl}
             target="_blank"
             title={commentUrl}
@@ -76,24 +76,24 @@ export const Comment = (props: CommentProps) => {
             {time}
           </a>
         </div>
-        <div className={baseClass('pane-content')}>
+        <div className={baseClass('panel-content')}>
           <CommentContent
             commentRenderStyle={commentContentRenderStyle}
             textStr={body_text}
             htmlStr={body_html}
           />
         </div>
-        <div className={baseClass('pane-reactions')}>
+        <div className={baseClass('panel-reactions')}>
           {Object.keys(REACTION_ICONS).map((reaction) => {
             return (
               <span
-                className={baseClass('pane-reactions-item')}
+                className={baseClass('panel-reactions-item')}
                 onClick={() => {
                   confirm('');
                 }}
               >
                 {REACTION_ICONS[reaction]}
-                <span className={baseClass('pane-reactions-item-count')}>
+                <span className={baseClass('panel-reactions-item-count')}>
                   {reactions[reaction]}
                 </span>
               </span>
@@ -142,7 +142,7 @@ function CommentContent(props: {
 function PureTextContent(props: { textStr: string }) {
   return (
     <div
-      className={baseClass('pane-content-pure-text')}
+      className={baseClass('panel-content-pure-text')}
       style={{
         whiteSpace: 'pre-wrap', // 避免丢失换行（\n）
       }}
@@ -162,7 +162,7 @@ function RichTextContent(props: { htmlStr: string }) {
   }, [props.htmlStr, contentEleRef]);
   return (
     <div
-      className={cls(baseClass('pane-content-rich-text'), 'markdown-body')}
+      className={cls(baseClass('panel-content-rich-text'), 'markdown-body')}
       ref={contentEleRef}
     />
   );
