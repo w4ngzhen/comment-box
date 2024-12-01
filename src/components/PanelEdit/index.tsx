@@ -5,15 +5,15 @@ import { cls } from '../../utils';
 import { IconSend } from '../basic/icons/IconSend';
 import { IconLoading } from '../basic/icons/IconLoading';
 
-const baseCls = baseClassSupplier('edit-panel');
+const baseCls = baseClassSupplier('panel-edit');
 
-interface EditPanelProps {
+interface PanelEditProps {
   loading?: boolean;
   onCommentSendClick?: (content: string) => void;
   className?: string;
 }
 
-export const EditPanel = (props: EditPanelProps) => {
+export const PanelEdit = (props: PanelEditProps) => {
   const { loading, onCommentSendClick, className } = props;
   const [inputContent, setInputContent] = useState<string>(undefined);
 

@@ -5,6 +5,10 @@ interface Options {
    */
   clientId: string;
   /**
+   *
+   */
+  authCallbackUrl: string;
+  /**
    * 存放Issues的仓库的owner
    */
   owner: string;
