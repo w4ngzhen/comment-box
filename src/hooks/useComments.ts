@@ -1,6 +1,6 @@
-import { useContext, useEffect, useMemo, useState } from 'preact/compat';
+import { useContext, useMemo, useState } from 'preact/compat';
 import { OptionsContext } from '../contexts/OptionsContext';
-import { getIssueWithTargetLabel, Issue } from '../api/getIssueWithTargetLabel';
+import { Issue } from '../api/getIssueWithTargetLabel';
 
 export interface IssueComment {
   user: {
@@ -23,34 +23,22 @@ export interface IssueComment {
 
 export type CommentReactionsKey = keyof IssueComment['reactions'];
 
-export const useComments = () => {
+export const useComments = (issue: Issue) => {
   const opts = useContext(OptionsContext);
-  const { owner, repo, issueKey, commentContentRenderStyle } = opts;
-  const [initLoading, setInitLoading] = useState<boolean>(false);
-  const [initError, setInitError] = useState<string>(undefined);
+  const { commentContentRenderStyle } = opts;
 
-  const [issueInfo, setIssueInfo] = useState<Issue>(undefined);
   const [commentLoading, setCommentLoading] = useState<boolean>(false);
   const [comments, setComments] = useState<IssueComment[]>([]);
-
-  useEffect(() => {
-    // issueKey 就是 label
-    getIssueWithTargetLabel(owner, repo, issueKey)
-      .then((issue) => {
-        setIssueInfo(issue);
-      })
-      .catch((err) => setInitError(err.message));
-  }, [opts]);
 
   const totalPageNumber = useMemo(() => {
     if (opts.commentPageSize <= 0) {
       return 0;
     }
-    if (!issueInfo || issueInfo.comments <= 0) {
+    if (!issue || issue.comments <= 0) {
       return 0;
     }
-    return Math.ceil(issueInfo.comments / opts.commentPageSize);
-  }, [opts.commentPageSize, issueInfo]);
+    return Math.ceil(issue.comments / opts.commentPageSize);
+  }, [opts.commentPageSize, issue]);
 
   /**
    * 无状态函数
@@ -58,7 +46,7 @@ export const useComments = () => {
    */
   const requestComments = async (pageNumber: number) => {
     setCommentLoading(true);
-    const apiUrl = `${issueInfo.comments_url}?page=${pageNumber}&per_page=${opts.commentPageSize}`;
+    const apiUrl = `${issue.comments_url}?page=${pageNumber}&per_page=${opts.commentPageSize}`;
     try {
       let accept: string;
       if (commentContentRenderStyle === 'both') {
@@ -86,8 +74,6 @@ export const useComments = () => {
   };
 
   return {
-    initLoading,
-    initError,
     commentLoading,
     totalPageNumber,
     comments,

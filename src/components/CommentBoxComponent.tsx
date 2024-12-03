@@ -7,6 +7,9 @@ import { useLocalStorageState } from '../hooks/useLocalStorageState';
 import { getUserInfo, UserInfo } from '../api/getUserInfo';
 import { PanelEdit } from './PanelEdit';
 import { PanelLogin } from './PanelLogin';
+import { Spin } from './basic/Spin';
+import { useIssue } from '../hooks/useIssue';
+import { addCommentToIssue } from '../api/addCommentToIssue';
 
 const baseCls = baseClassSupplier('root');
 
@@ -16,11 +19,16 @@ interface CommentBoxComponentProps {
 
 type UserLoginStatus = 'noLogin' | 'loading' | 'login';
 
-type StorageUserInfo = {} & UserInfo;
+type StorageUserInfo = { accessToken: string } & UserInfo;
 
 export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
   const { options } = props;
   const { commentPageSize = 20, ...restOpts } = options;
+  const {
+    loading: issueLoading,
+    error: loadIssueErr,
+    issue,
+  } = useIssue(options);
   const [sendLoading, setSendLoading] = useState(false);
   // 用户信息加载
   const [userLoadingStatus, setUserLoadingStatus] =
@@ -31,15 +39,17 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
     '$COMMENT_BOX_USER_INFO$',
   );
 
-  useLayoutEffect(() => {
-    console.debug('Mount instant success.');
-  }, []);
-
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
-    const accessToken = query.get('access_token');
+    const tokenUrlKey = 'gh_access_token';
+    const accessToken = query.get(tokenUrlKey);
     if (userInfo) {
-      // 存在用户信息，直接使用
+      // 存在用户信息，直接使用，但是需要清理掉url上的参数
+      // 清理access_token
+      if (accessToken) {
+        query.delete(tokenUrlKey);
+        window.location.href = `${window.location.origin}?${query.toString()}`;
+      }
       setUserLoadingStatus('login');
       return;
     }
@@ -55,8 +65,8 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
         accessToken,
       };
       setUserInfo(info);
-      query.delete('access_token');
-      window.location.href = window.location.host + query.toString();
+      query.delete(tokenUrlKey);
+      window.location.href = `${window.location.origin}?${query.toString()}`;
     });
   }, []);
 
@@ -65,19 +75,40 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
   };
 
-  if (userLoadingStatus === 'loading') {
-    return <div>loading...</div>;
+  if (issueLoading || userLoadingStatus === 'loading') {
+    return (
+      <div style={{ width: '100px' }}>
+        <Spin />
+      </div>
+    );
+  }
+
+  if (!issueLoading && loadIssueErr) {
+    return <div>{`load issue err: ${loadIssueErr}`}</div>;
   }
 
   const renderPanel = () => {
-    if (userLoadingStatus === 'noLogin') {
+    if (userLoadingStatus === 'noLogin' || !userInfo) {
       return <PanelLogin />;
     }
     return (
       <PanelEdit
+        userInfo={userInfo}
         loading={sendLoading}
         className={baseCls('panel-edit-wrapper')}
-        onCommentSendClick={onCommentSendClick}
+        onCommentSendClick={async (commentContent) => {
+          await addCommentToIssue({
+            accessToken: userInfo.accessToken,
+            comment: commentContent,
+            issueNumber: issue.number,
+            owner: options.owner,
+            repo: options.repo,
+          });
+        }}
+        onLogoutClick={() => {
+          setUserLoadingStatus('noLogin');
+          setUserInfo(undefined);
+        }}
       />
     );
   };
@@ -90,7 +121,7 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
       }}
     >
       {renderPanel()}
-      <CommentList />
+      <CommentList issue={issue} />
     </OptionsContext.Provider>
   );
 };

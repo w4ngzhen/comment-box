@@ -19,6 +19,7 @@ export function useLocalStorageState<TValue>(
   });
   useEffect(() => {
     if (!value) {
+      localStorage.removeItem(localStorageKey);
       return;
     }
     localStorage.setItem(localStorageKey, JSON.stringify(value));

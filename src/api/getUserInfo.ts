@@ -1,4 +1,9 @@
-export interface UserInfo {}
+export interface UserInfo {
+  avatar_url: string;
+  login: string;
+  name: string;
+  home_url: string;
+}
 
 export const getUserInfo = async (accessToken: string) => {
   let response: Response;

@@ -7,28 +7,22 @@ import { useEffect, useState } from 'preact/compat';
 import { cls } from '../../utils';
 import { SimplePagination } from '../basic/Pagination';
 import { Spin } from '../basic/Spin';
+import { Issue } from '../../api/getIssueWithTargetLabel';
 
 const baseClass = baseClassSupplier('comment-list');
 
-interface CommentListProps {}
+interface CommentListProps {
+  issue: Issue;
+}
 
 export const CommentList = (props: CommentListProps) => {
-  const {} = props;
+  const { issue } = props;
   // 默认从第一页开始
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const {
-    initLoading,
-    initError,
-    commentLoading,
-    totalPageNumber,
-    comments,
-    requestComments,
-  } = useComments();
+  const { commentLoading, totalPageNumber, comments, requestComments } =
+    useComments(issue);
 
   useEffect(() => {
-    if (initLoading || initError) {
-      return;
-    }
     if (currentPage > totalPageNumber) {
       return;
     }
@@ -36,13 +30,7 @@ export const CommentList = (props: CommentListProps) => {
     requestComments(currentPage).then(() => {
       console.debug(`request page#${currentPage} data finished.`);
     });
-  }, [initLoading, initError, currentPage, totalPageNumber]);
-
-  if (initLoading) {
-    return <div>init loading</div>;
-  } else if (initError) {
-    return <div>{initError}</div>;
-  }
+  }, [currentPage, totalPageNumber]);
 
   const renderList = () => {
     if (commentLoading) {

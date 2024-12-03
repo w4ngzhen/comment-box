@@ -4,18 +4,23 @@ import { useState } from 'preact/compat';
 import { cls } from '../../utils';
 import { IconSend } from '../basic/icons/IconSend';
 import { IconLoading } from '../basic/icons/IconLoading';
+import { UserInfo } from '../../api/getUserInfo';
 
 const baseCls = baseClassSupplier('panel-edit');
 
 interface PanelEditProps {
+  userInfo: UserInfo;
   loading?: boolean;
   onCommentSendClick?: (content: string) => void;
+  onLogoutClick?: () => void;
   className?: string;
 }
 
 export const PanelEdit = (props: PanelEditProps) => {
-  const { loading, onCommentSendClick, className } = props;
+  const { userInfo, loading, onCommentSendClick, onLogoutClick, className } =
+    props;
   const [inputContent, setInputContent] = useState<string>(undefined);
+  const [showLogoutBtn, setShowLogoutBtn] = useState(false);
 
   const [focused, setFocused] = useState<boolean>(false);
 
@@ -34,7 +39,20 @@ export const PanelEdit = (props: PanelEditProps) => {
 
   return (
     <div className={cls(baseCls(), focused && baseCls('focused'), className)}>
-      <div></div>
+      <div className={baseCls('info')}>
+        <img
+          onClick={() => setShowLogoutBtn((prev) => !prev)}
+          className={baseCls('info-avatar')}
+          src={userInfo.avatar_url}
+          alt={'current user avatar'}
+        />
+        <div
+          className={baseCls('info-logout-btn')}
+          style={{ visibility: showLogoutBtn ? 'visible' : 'hidden' }}
+        >
+          <button onClick={onLogoutClick}>logout</button>
+        </div>
+      </div>
       <textarea
         disabled={loading}
         className={cls(baseCls('input'), loading && baseCls('input-disabled'))}
