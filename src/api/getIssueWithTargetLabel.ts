@@ -11,6 +11,7 @@ export interface Issue {
    * 直接通过该URL，可以获取对应issue下的评论
    */
   comments_url: string;
+  html_url: string;
 }
 
 export async function getIssueWithTargetLabel(

@@ -1,13 +1,35 @@
 @import "../../styles/var";
 
 .@{prefix}_comment-list {
-  &-content-item-wrapper {
-    &:not(:first-child) {
-      margin-top: 36px;
+  &-content {
+    &-item-wrapper {
+      &:not(:first-child) {
+        margin-top: 36px;
+      }
     }
   }
 
-  &-pagination {
-    margin-top: 24px
+  &-more-btn {
+    margin-top: 24px;
+    padding-top: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    button {
+      all: unset;
+      color: #666;
+      font-size: 14px;
+
+      svg {
+        margin-left: 4px;
+        width: 12px;
+        height: 12px;
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
 }

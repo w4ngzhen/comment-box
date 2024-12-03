@@ -1,6 +1,7 @@
-import { useContext, useMemo, useState } from 'preact/compat';
+import { useContext, useEffect, useState } from 'preact/compat';
 import { OptionsContext } from '../contexts/OptionsContext';
 import { Issue } from '../api/getIssueWithTargetLabel';
+import { getCommentsWithTargetIssue } from '../api/getCommentsWithTargetIssue';
 
 export interface IssueComment {
   user: {
@@ -25,29 +26,20 @@ export type CommentReactionsKey = keyof IssueComment['reactions'];
 
 export const useComments = (issue: Issue) => {
   const opts = useContext(OptionsContext);
-  const { commentContentRenderStyle } = opts;
+  const { commentContentRenderStyle, commentLatestSize } = opts;
+  const { number: issueNum, comments: totalComments } = issue;
+  const { owner, repo } = opts;
 
-  const [commentLoading, setCommentLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>(undefined);
   const [comments, setComments] = useState<IssueComment[]>([]);
 
-  const totalPageNumber = useMemo(() => {
-    if (opts.commentPageSize <= 0) {
-      return 0;
+  useEffect(() => {
+    if (!owner || !repo || !issueNum || !totalComments || !commentLatestSize) {
+      return;
     }
-    if (!issue || issue.comments <= 0) {
-      return 0;
-    }
-    return Math.ceil(issue.comments / opts.commentPageSize);
-  }, [opts.commentPageSize, issue]);
-
-  /**
-   * 无状态函数
-   * @param pageNumber
-   */
-  const requestComments = async (pageNumber: number) => {
-    setCommentLoading(true);
-    const apiUrl = `${issue.comments_url}?page=${pageNumber}&per_page=${opts.commentPageSize}`;
-    try {
+    (async function load() {
+      setLoading(true);
       let accept: string;
       if (commentContentRenderStyle === 'both') {
         accept = 'application/vnd.github.full+json';
@@ -57,26 +49,32 @@ export const useComments = (issue: Issue) => {
         // 兜底用纯文本
         accept = 'application/vnd.github.text+json';
       }
-      const resp = await fetch(apiUrl, {
-        headers: {
-          Accept: accept,
-        },
-      });
-      if (!resp.ok) {
+      try {
+        const comments = await getCommentsWithTargetIssue(
+          {
+            owner,
+            repo,
+            issueNumber: issueNum,
+            totalCommentLen: totalComments,
+            commentLatestSize,
+          },
+          {
+            Accept: accept,
+          },
+        );
+        setComments(comments);
+      } catch (e) {
+        setError(e.message);
         setComments([]);
+      } finally {
+        setLoading(false);
       }
-      setComments(await resp.json());
-    } catch (e) {
-      setComments([]);
-    } finally {
-      setCommentLoading(false);
-    }
-  };
+    })();
+  }, [owner, repo, issueNum, totalComments, commentLatestSize]);
 
   return {
-    commentLoading,
-    totalPageNumber,
+    loading,
+    error,
     comments,
-    requestComments,
   };
 };

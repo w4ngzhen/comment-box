@@ -32,10 +32,10 @@ interface Options {
    */
   issueKey: string;
   /**
-   * 评论记录分页大小
+   * 展示的最新评论数量
    * @defaultValue 20
    */
-  commentPageSize?: number;
+  commentLatestSize?: number;
   /**
    * 评论内容样式
    * GitHub Issue支持返回纯文本的评论内容以及带有DOM结构的评论内容（通常是markdown转换后的html）

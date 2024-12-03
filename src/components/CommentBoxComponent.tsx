@@ -23,7 +23,7 @@ type StorageUserInfo = { accessToken: string } & UserInfo;
 
 export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
   const { options } = props;
-  const { commentPageSize = 20, ...restOpts } = options;
+  const { commentLatestSize = 20, ...restOpts } = options;
   const {
     loading: issueLoading,
     error: loadIssueErr,
@@ -76,11 +76,7 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
   };
 
   if (issueLoading || userLoadingStatus === 'loading') {
-    return (
-      <div style={{ width: '100px' }}>
-        <Spin />
-      </div>
-    );
+    return <Spin />;
   }
 
   if (!issueLoading && loadIssueErr) {
@@ -117,11 +113,15 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
     <OptionsContext.Provider
       value={{
         ...restOpts,
-        commentPageSize,
+        commentLatestSize,
       }}
     >
-      {renderPanel()}
-      <CommentList issue={issue} />
+      <div className={baseCls()}>
+        <div className={baseCls('center')}>
+          {renderPanel()}
+          <CommentList issue={issue} />
+        </div>
+      </div>
     </OptionsContext.Provider>
   );
 };
