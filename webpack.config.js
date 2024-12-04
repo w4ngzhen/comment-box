@@ -1,6 +1,7 @@
 const path = require('node:path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = {
   mode: 'development',
@@ -39,6 +40,7 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'comment-box.css',
     }),
+    new CompressionPlugin({}),
   ],
   devServer: {
     port: 8080,
