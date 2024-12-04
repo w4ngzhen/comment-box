@@ -1,6 +1,6 @@
 import { OptionsContext } from '../contexts/OptionsContext';
 import { CommentList } from './CommentList';
-import { useEffect, useLayoutEffect, useState } from 'preact/compat';
+import { useEffect, useState } from 'preact/compat';
 import './index.less';
 import { baseClassSupplier } from '../styles/class-utils';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
@@ -10,6 +10,12 @@ import { PanelLogin } from './PanelLogin';
 import { Spin } from './basic/Spin';
 import { useIssue } from '../hooks/useIssue';
 import { addCommentToIssue } from '../api/addCommentToIssue';
+import {
+  getCommentsWithTargetIssue,
+  IssueComment,
+} from '../api/getCommentsWithTargetIssue';
+import { ErrorTip } from './basic/ErrorTip';
+import { Issue } from '../api/getIssueWithTargetLabel';
 
 const baseCls = baseClassSupplier('root');
 
@@ -24,12 +30,26 @@ type StorageUserInfo = { accessToken: string } & UserInfo;
 export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
   const { options } = props;
   const { commentLatestSize = 20, ...restOpts } = options;
+
+  // issue加载
   const {
     loading: issueLoading,
     error: loadIssueErr,
     issue,
   } = useIssue(options);
+
+  // comments
+  const [loadCommentsResult, setCommentsLoadingResult] = useState<{
+    loading: boolean;
+    error?: string;
+    comments?: IssueComment[];
+  }>({
+    loading: true,
+  });
+
+  // comment发送loading
   const [sendLoading, setSendLoading] = useState(false);
+
   // 用户信息加载
   const [userLoadingStatus, setUserLoadingStatus] =
     useState<UserLoginStatus>('noLogin');
@@ -39,6 +59,9 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
     '$COMMENT_BOX_USER_INFO$',
   );
 
+  /**
+   * 登录回调处理逻辑
+   */
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
     const tokenUrlKey = 'gh_access_token';
@@ -70,22 +93,64 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
     });
   }, []);
 
-  const onCommentSendClick = async (comment: string) => {
-    setSendLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  const loadComments = async (issueInfo: Issue) => {
+    setCommentsLoadingResult({
+      loading: true,
+    });
+    let accept: string;
+    const { owner, repo, commentContentRenderStyle: renderStyle } = options;
+    if (renderStyle === 'both') {
+      accept = 'application/vnd.github.full+json';
+    } else if (renderStyle === 'rich') {
+      accept = 'application/vnd.github.html+json';
+    } else {
+      // 兜底用纯文本
+      accept = 'application/vnd.github.text+json';
+    }
+    try {
+      const comments = await getCommentsWithTargetIssue(
+        {
+          owner,
+          repo,
+          issueNumber: issueInfo.number,
+          totalCommentLen: issueInfo.comments,
+          commentLatestSize,
+        },
+        {
+          Accept: accept,
+        },
+      );
+      setCommentsLoadingResult({
+        loading: false,
+        comments: comments,
+      });
+    } catch (e) {
+      console.error(e);
+      setCommentsLoadingResult({
+        loading: false,
+        error: e.message,
+      });
+    }
   };
+
+  useEffect(() => {
+    if (issueLoading || loadIssueErr) {
+      return;
+    }
+    loadComments(issue).then();
+  }, [issueLoading, loadIssueErr, issue]);
 
   if (issueLoading || userLoadingStatus === 'loading') {
     return <Spin />;
   }
 
   if (!issueLoading && loadIssueErr) {
-    return <div>{`load issue err: ${loadIssueErr}`}</div>;
+    return <ErrorTip error={loadIssueErr} />;
   }
 
   const renderPanel = () => {
     if (userLoadingStatus === 'noLogin' || !userInfo) {
-      return <PanelLogin />;
+      return <PanelLogin className={baseCls('panel-login-wrapper')} />;
     }
     return (
       <PanelEdit
@@ -93,13 +158,21 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
         loading={sendLoading}
         className={baseCls('panel-edit-wrapper')}
         onCommentSendClick={async (commentContent) => {
-          await addCommentToIssue({
-            accessToken: userInfo.accessToken,
-            comment: commentContent,
-            issueNumber: issue.number,
-            owner: options.owner,
-            repo: options.repo,
-          });
+          try {
+            setSendLoading(true);
+            await addCommentToIssue({
+              accessToken: userInfo.accessToken,
+              comment: commentContent,
+              issueNumber: issue.number,
+              owner: options.owner,
+              repo: options.repo,
+            });
+            await loadComments(issue);
+          } catch (e) {
+            console.error('send comment err: ', e);
+          } finally {
+            setSendLoading(false);
+          }
         }}
         onLogoutClick={() => {
           setUserLoadingStatus('noLogin');
@@ -107,6 +180,21 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
         }}
       />
     );
+  };
+
+  const renderCommentList = () => {
+    if (issueLoading || loadIssueErr) {
+      return;
+    }
+    const { loading, error, comments } = loadCommentsResult;
+    if (loading) {
+      return <Spin />;
+    }
+    if (error) {
+      return <ErrorTip error={error} />;
+    }
+    console.debug(comments);
+    return <CommentList issue={issue} comments={comments} />;
   };
 
   return (
@@ -119,7 +207,7 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
       <div className={baseCls()}>
         <div className={baseCls('center')}>
           {renderPanel()}
-          <CommentList issue={issue} />
+          {renderCommentList()}
         </div>
       </div>
     </OptionsContext.Provider>

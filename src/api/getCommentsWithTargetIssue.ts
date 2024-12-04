@@ -26,8 +26,7 @@ export interface IssueComment {
  * 已知issue下的comment的总条数为len，倒数前n条数据的计算方式为：
  * 首先得到总页数：page_count = Math.ceil(n / len)；
  * 情况1:若len能被n除尽，那么倒数前n条就是最后一页数据，因此 page_size = n, page_num = page_count
- * 情况2:若len无法被n除尽，说明最后一页不满n条，因为我们需要请求最后一页以及倒数第二页数据，但我们可以将其合成为：
- * page_size = n * 2，page_num = page_count - 1（按照两倍容量请求倒数第二页）
+ * 情况2:若len无法被n除尽，说明最后一页不满n条，我们将分页size乘以2，并请求最后一页
  * 上述两种场景得到结果就是能够拿到倒数至少前n条数据（情况2会拿到多于n条的数据）
  * 得到数据以后在客户端进行按照创建时间降序排列，再取前n条数据
  */
@@ -41,19 +40,23 @@ export const getCommentsWithTargetIssue = async (
   },
   headers: HeadersInit,
 ): Promise<IssueComment[]> => {
-  const { owner, repo, issueNumber, totalCommentLen, commentLatestSize } = params;
-  const pageCount = Math.ceil(totalCommentLen / commentLatestSize);
+  console.debug('getCommentsWithTargetIssue', params);
+  const { owner, repo, issueNumber, totalCommentLen, commentLatestSize } =
+    params;
   let pageSize: number;
   let pageNum: number;
   if (totalCommentLen <= commentLatestSize) {
     pageSize = commentLatestSize;
     pageNum = 1;
   } else if (totalCommentLen % commentLatestSize === 0) {
+    const pageCount = Math.ceil(totalCommentLen / commentLatestSize);
     pageSize = commentLatestSize;
     pageNum = pageCount;
   } else {
+    // 最后一页无法满足，则按照双倍请求最后一页
+    const pageCount = Math.ceil(totalCommentLen / (commentLatestSize * 2));
     pageSize = commentLatestSize * 2;
-    pageNum = pageCount - 1;
+    pageNum = pageCount;
   }
   const url = `https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/comments?page=${pageNum}&per_page=${pageSize}`;
   let resp: Response;

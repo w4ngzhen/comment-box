@@ -26,17 +26,6 @@ export const PanelEdit = (props: PanelEditProps) => {
 
   const isDisabled = !inputContent;
 
-  const onSendCommentClick = () => {
-    if (isDisabled) {
-      return;
-    }
-    const ok = confirm('Do you want send this comment?');
-    if (!ok) {
-      return;
-    }
-    onCommentSendClick?.(inputContent);
-  };
-
   return (
     <div className={cls(baseCls(), focused && baseCls('focused'), className)}>
       <div className={baseCls('info')}>
@@ -50,7 +39,15 @@ export const PanelEdit = (props: PanelEditProps) => {
           className={baseCls('info-logout-btn')}
           style={{ visibility: showLogoutBtn ? 'visible' : 'hidden' }}
         >
-          <button onClick={onLogoutClick}>logout</button>
+          <button
+            onClick={() => {
+              if (confirm('Are you sure to logout ➡️ ?')) {
+                onLogoutClick?.();
+              }
+            }}
+          >
+            logout
+          </button>
         </div>
       </div>
       <textarea
@@ -70,7 +67,11 @@ export const PanelEdit = (props: PanelEditProps) => {
             baseCls('actions-send-btn'),
             (loading || isDisabled) && baseCls('actions-send-btn-disabled'),
           )}
-          onClick={onSendCommentClick}
+          onClick={() => {
+            if (!isDisabled && confirm('Do you want send this comment?')) {
+              onCommentSendClick?.(inputContent);
+            }
+          }}
         >
           {loading ? <IconLoading /> : <IconSend />}
         </button>

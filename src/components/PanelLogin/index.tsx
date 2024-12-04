@@ -20,14 +20,13 @@ export const PanelLogin = (props: PanelLoginProps) => {
   return (
     <div className={cls(baseCls(), className)}>
       <button className={baseCls('login-btn')} onClick={onClick}>
-        login
+        login with GitHub
       </button>
     </div>
   );
 };
 
 function getAuthUrl(callbackUrl: string, clientId: string) {
-  // todo 上述参数需要对应自己的服务和CLIENT_ID
   const currentPageUrl = window.location.href;
   const encodedPageUrl = encodeURIComponent(currentPageUrl);
   const redirectUri = `${callbackUrl}?r=${encodedPageUrl}`;

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'preact/compat';
 import { getIssueWithTargetLabel, Issue } from '../api/getIssueWithTargetLabel';
 
-export const useIssue = (options: Options) => {
+export const useIssue = (
+  options: Options,
+): { issue: Issue; loading: boolean; error: string } => {
   const { owner, repo, issueKey } = options;
   const [issue, setIssue] = useState<Issue>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
