@@ -7,7 +7,7 @@ import { Spin } from '../basic/Spin';
 import { Issue } from '../../api/getIssueWithTargetLabel';
 import { useContext } from 'preact/compat';
 import { OptionsContext } from '../../contexts/OptionsContext';
-import { IconJump } from '../basic/icons/IconJump';
+import { IconArrow } from '../basic/icons/IconArrow';
 
 const baseClass = baseClassSupplier('comment-list');
 
@@ -49,7 +49,7 @@ export const CommentList = (props: CommentListProps) => {
               }}
             >
               more
-              <IconJump />
+              <IconArrow />
             </button>
           </div>
         ) : null}
