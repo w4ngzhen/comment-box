@@ -1,0 +1,35 @@
+.@{prefix}_comment-list {
+  &-content {
+    &-item-wrapper {
+      &:not(:first-child) {
+        margin-top: 36px;
+      }
+    }
+  }
+
+  &-more-btn {
+    margin-top: 24px;
+    padding-top: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    button {
+      all: unset;
+      color: #666;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+
+      svg {
+        width: 14px;
+        height: 14px;
+        transform: rotate(135deg);
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+}
