@@ -2,7 +2,7 @@ const gulp = require('gulp');
 
 function copyLessFiles() {
   return gulp
-    .src(['src/**/*.less'], { src: 'src' }) // 排除 Less 文件
+    .src(['src/**/*.less'], { src: 'src' })
     .pipe(gulp.dest('dist'));
 }
 

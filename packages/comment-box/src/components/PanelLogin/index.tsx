@@ -1,7 +1,8 @@
 import './index.less';
 import { useContext } from 'preact/compat';
 import { OptionsContext } from '../../contexts/OptionsContext';
-import { baseClassSupplier, cls } from 'comment-box-shared';
+import { cls } from 'comment-box-shared';
+import { baseClassSupplier } from '../../utils';
 
 const baseCls = baseClassSupplier('panel-login');
 

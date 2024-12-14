@@ -20,15 +20,7 @@ export function init(mountEle: string, opts: Options) {
     }
     return true;
   };
-  if (
-    !validateNonEmpty([
-      'owner',
-      'clientId',
-      'authCallbackUrl',
-      'issueKey',
-      'repo',
-    ])
-  ) {
+  if (!validateNonEmpty(['owner', 'issueKey', 'repo'])) {
     return;
   }
   console.debug('Prepare mount CommentBox instant');
@@ -39,8 +31,6 @@ export function init(mountEle: string, opts: Options) {
 }
 
 init('#comment-box', {
-  clientId: 'TBD',
-  authCallbackUrl: 'TBD',
   issueKey: 'test',
   owner: 'w4ngzhen',
   repo: 'blog',

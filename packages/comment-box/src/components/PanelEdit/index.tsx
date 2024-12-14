@@ -1,12 +1,12 @@
 import './index.less';
 import { useState } from 'preact/compat';
 import {
-  baseClassSupplier,
   cls,
   IconLoading,
   IconSend,
   UserInfo,
 } from 'comment-box-shared';
+import { baseClassSupplier } from '../../utils';
 
 const baseCls = baseClassSupplier('panel-edit');
 

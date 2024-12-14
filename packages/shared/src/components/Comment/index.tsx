@@ -1,10 +1,10 @@
 import './index.less';
-import { baseClassSupplier, cls } from '../../utils';
 import { useLayoutEffect, useMemo, useRef, useState } from 'preact/compat';
 import * as dayjs from 'dayjs';
 import * as relativeTime from 'dayjs/plugin/relativeTime';
 import { IssueComment } from '../../api';
 import { CommentContentRenderStyle } from '../../interface';
+import { baseClassSupplier, cls } from '../../utils/class-utils';
 
 dayjs.extend(relativeTime);
 

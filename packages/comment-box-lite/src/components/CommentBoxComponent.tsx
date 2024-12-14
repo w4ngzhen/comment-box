@@ -1,10 +1,7 @@
 import { OptionsContext } from '../contexts/OptionsContext';
 import { useEffect, useState } from 'preact/compat';
 import './index.less';
-import { PanelEdit } from './PanelEdit';
-import { PanelLogin } from './PanelLogin';
 import {
-  addCommentToIssue,
   CommentList,
   ErrorTip,
   getCommentsWithTargetIssue,
@@ -52,9 +49,6 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
   }>({
     loading: true,
   });
-
-  // comment发送loading
-  const [sendLoading, setSendLoading] = useState(false);
 
   // 用户信息加载
   const [userLoadingStatus, setUserLoadingStatus] =
@@ -152,40 +146,6 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
     return <ErrorTip error={loadIssueErr} />;
   }
 
-  const renderPanel = () => {
-    if (userLoadingStatus === 'noLogin' || !userInfo) {
-      return <PanelLogin className={baseCls('panel-login-wrapper')} />;
-    }
-    return (
-      <PanelEdit
-        userInfo={userInfo}
-        loading={sendLoading}
-        className={baseCls('panel-edit-wrapper')}
-        onCommentSendClick={async (commentContent) => {
-          try {
-            setSendLoading(true);
-            await addCommentToIssue({
-              accessToken: userInfo.accessToken,
-              comment: commentContent,
-              issueNumber: issue.number,
-              owner: options.owner,
-              repo: options.repo,
-            });
-            await loadComments(issue);
-          } catch (e) {
-            console.error('send comment err: ', e);
-          } finally {
-            setSendLoading(false);
-          }
-        }}
-        onLogoutClick={() => {
-          setUserLoadingStatus('noLogin');
-          setUserInfo(undefined);
-        }}
-      />
-    );
-  };
-
   const renderCommentList = () => {
     if (issueLoading || loadIssueErr) {
       return;
@@ -215,10 +175,7 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
       }}
     >
       <div className={baseCls()}>
-        <div className={baseCls('center')}>
-          {renderPanel()}
-          {renderCommentList()}
-        </div>
+        <div className={baseCls('center')}>{renderCommentList()}</div>
       </div>
     </OptionsContext.Provider>
   );

@@ -1,9 +1,9 @@
 import { Comment } from '../Comment';
-import { baseClassSupplier } from '../../utils';
 import './index.less';
 import { Issue } from '../../api';
 import { IconArrow } from '../basic';
 import { IssueComment } from '../../api';
+import { baseClassSupplier } from '../../utils/class-utils';
 
 const baseClass = baseClassSupplier('comment-list');
 

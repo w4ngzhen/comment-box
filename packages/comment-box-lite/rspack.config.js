@@ -7,7 +7,7 @@ module.exports = {
     main: path.resolve(__dirname, 'src/index.tsx'),
   },
   output: {
-    filename: 'comment-box.js',
+    filename: 'comment-box-lite.js',
     path: path.resolve(__dirname, 'dist'),
   },
   resolve: {
@@ -42,7 +42,7 @@ module.exports = {
       inject: 'body',
     }),
     new rspack.CssExtractRspackPlugin({
-      filename: 'comment-box.css',
+      filename: 'comment-box-lite.css',
     }),
   ],
   devServer: {

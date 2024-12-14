@@ -1,1 +1,1 @@
-export { getClassname, cls, baseClassSupplier } from './class-utils';
+export { cls } from './class-utils';
