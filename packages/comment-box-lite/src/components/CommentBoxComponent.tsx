@@ -5,13 +5,11 @@ import {
   CommentList,
   ErrorTip,
   getCommentsWithTargetIssue,
-  getUserInfo,
+  IconArrow,
   Issue,
   IssueComment,
   Spin,
   useIssue,
-  useLocalStorageState,
-  UserInfo,
 } from 'comment-box-shared';
 import { Options } from '../interface';
 import { baseClassSupplier } from '../utils';
@@ -21,10 +19,6 @@ const baseCls = baseClassSupplier('root');
 interface CommentBoxComponentProps {
   options: Options;
 }
-
-type UserLoginStatus = 'noLogin' | 'loading' | 'login';
-
-type StorageUserInfo = { accessToken: string } & UserInfo;
 
 export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
   const { options } = props;
@@ -49,49 +43,6 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
   }>({
     loading: true,
   });
-
-  // 用户信息加载
-  const [userLoadingStatus, setUserLoadingStatus] =
-    useState<UserLoginStatus>('noLogin');
-
-  const [userInfo, setUserInfo] = useLocalStorageState<StorageUserInfo>(
-    undefined,
-    '$COMMENT_BOX_USER_INFO$',
-  );
-
-  /**
-   * 登录回调处理逻辑
-   */
-  useEffect(() => {
-    const query = new URLSearchParams(window.location.search);
-    const tokenUrlKey = 'gh_access_token';
-    const accessToken = query.get(tokenUrlKey);
-    if (userInfo) {
-      // 存在用户信息，直接使用，但是需要清理掉url上的参数
-      // 清理access_token
-      if (accessToken) {
-        query.delete(tokenUrlKey);
-        window.location.href = `${window.location.origin}?${query.toString()}`;
-      }
-      setUserLoadingStatus('login');
-      return;
-    }
-    if (!accessToken) {
-      // 不存在用户信息，url上也没有access_token，进入noLogin状态
-      setUserLoadingStatus('noLogin');
-      return;
-    }
-    // 存在access_token，调用github接口获取用户信息
-    getUserInfo(accessToken).then((userInfo) => {
-      let info: StorageUserInfo = {
-        ...userInfo,
-        accessToken,
-      };
-      setUserInfo(info);
-      query.delete(tokenUrlKey);
-      window.location.href = `${window.location.origin}?${query.toString()}`;
-    });
-  }, []);
 
   const loadComments = async (issueInfo: Issue) => {
     setCommentsLoadingResult({
@@ -138,7 +89,7 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
     loadComments(issue).then();
   }, [issueLoading, loadIssueErr, issue]);
 
-  if (issueLoading || userLoadingStatus === 'loading') {
+  if (issueLoading) {
     return <Spin />;
   }
 
@@ -157,7 +108,6 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
     if (error) {
       return <ErrorTip error={error} />;
     }
-    // console.debug(comments);
     return (
       <CommentList
         issue={issue}
@@ -165,6 +115,12 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
         commentLatestSize={options.commentLatestSize}
       />
     );
+  };
+
+  const onLeaveMsgButtonClick = () => {
+    if (confirm('前往对应issue下进行留言？')) {
+      window.open(issue.html_url, '_blank');
+    }
   };
 
   return (
@@ -175,7 +131,14 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
       }}
     >
       <div className={baseCls()}>
-        <div className={baseCls('center')}>{renderCommentList()}</div>
+        <button
+          className={baseCls('leave-msg-button')}
+          onClick={onLeaveMsgButtonClick}
+        >
+          <span>Leave a message</span>
+          <IconArrow />
+        </button>
+        <div className={baseCls('content')}>{renderCommentList()}</div>
       </div>
     </OptionsContext.Provider>
   );

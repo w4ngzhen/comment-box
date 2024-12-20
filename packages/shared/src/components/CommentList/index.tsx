@@ -31,7 +31,9 @@ export const CommentList = (props: CommentListProps) => {
         <div className={baseClass('more-btn')}>
           <button
             onClick={() => {
-              window.open(issue.html_url);
+              if (confirm('前往对应issue查看更多留言？')) {
+                window.open(issue.html_url);
+              }
             }}
           >
             more

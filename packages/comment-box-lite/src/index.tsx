@@ -35,5 +35,5 @@ init('#comment-box', {
   owner: 'w4ngzhen',
   repo: 'blog',
   commentContentRenderStyle: 'pure',
-  commentLatestSize: 10,
+  commentLatestSize: 5,
 });
