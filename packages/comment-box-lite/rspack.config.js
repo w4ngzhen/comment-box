@@ -9,6 +9,8 @@ module.exports = {
   output: {
     filename: 'comment-box-lite.js',
     path: path.resolve(__dirname, 'dist'),
+    library: 'CommentBoxLite',
+    libraryTarget: 'umd',
   },
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.json'],
@@ -38,8 +40,8 @@ module.exports = {
   },
   plugins: [
     new rspack.HtmlRspackPlugin({
-      template: path.resolve(__dirname, 'public', 'index.html'),
-      inject: 'body',
+      template: path.resolve(__dirname, 'example', 'index.html'),
+      inject: false,
     }),
     new rspack.CssExtractRspackPlugin({
       filename: 'comment-box-lite.css',

@@ -20,7 +20,7 @@ export function init(mountEle: string, opts: Options) {
     }
     return true;
   };
-  if (!validateNonEmpty(['owner', 'issueKey', 'repo'])) {
+  if (!validateNonEmpty(['owner', 'issueLabel', 'repo'])) {
     return;
   }
   console.debug('Prepare mount CommentBox instant');
@@ -29,11 +29,3 @@ export function init(mountEle: string, opts: Options) {
     document.querySelector(mountEle || '#comment-box'),
   );
 }
-
-init('#comment-box', {
-  issueKey: 'test',
-  owner: 'w4ngzhen',
-  repo: 'blog',
-  commentContentRenderStyle: 'pure',
-  commentLatestSize: 5,
-});

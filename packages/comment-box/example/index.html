@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+        name="viewport">
+  <meta charset="UTF-8">
+  <title>Custom insertion example</title>
+  <!-- 样式文件 -->
+  <link href="comment-box.css" rel="stylesheet">
+</head>
+<body>
+<div id="comment-box"></div>
+<!-- 加载js -->
+<script src="comment-box.js"></script>
+<!-- 加载js后，执行初始化 -->
+<script>
+  (function run() {
+    if (!window.CommentBox) {
+      console.error('cannot find CommentBoxLite');
+      return;
+    }
+    const clientId = '.....'; // <--- GitHub App clientId
+    const authCallbackUrl = '......'; // <--- auth callback url
+    CommentBox.init('#comment-box', {
+      clientId,
+      authCallbackUrl,
+      issueLabel: 'test',
+      owner: 'w4ngzhen',
+      repo: 'blog',
+      commentContentRenderStyle: 'pure',
+      commentLatestSize: 10
+    });
+  })();
+</script>
+</body>
+</html>

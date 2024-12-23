@@ -25,14 +25,14 @@ export interface Options {
    * 我们使用该key与repo中的issue列表中包含有该key值的label进行匹配，找到对应的issue。
    * 如果不存在该issue，则在创建阶段，我们调用API完成一个issue的创建后同时给该issue添加一个值为key的label。
    * 当然，上面描述的是组件内部对issue定位的原理，如果你只是一个使用者的话，只需要注意以下几点：
-   * 1. 传入的issueKey能够确保每一个页面上都是唯一的。
-   *    比如，你可以使用pathname作为唯一issueKey。
+   * 1. 传入的issueLabel能够确保每一个页面上都是唯一的。
+   *    比如，你可以使用pathname作为唯一issueLabel。
    *    然而需要注意的是，label是有字符串长度限制的，如果你能够确保pathname不会特别长的话，那么就可以直接使用。
    *    但是如果你无法保证的话，建议使用一个摘要方法来对pathname进行摘要
    *    （譬如使用md5，将pathname摘要为一个固定长度的随机字符串，但这样会丧失一定的可读性）
-   * 2. 因为issueKey对应的是repo中的某一条带有该key值的label的issue，因此，请不要随意修改仓库中的issue的label。
+   * 2. 因为issueLabel对应的是repo中的某一条带有该值的label的issue，因此，请不要随意修改仓库中的issue的label。
    */
-  issueKey: string;
+  issueLabel: string;
   /**
    * 展示的最新评论数量
    * @defaultValue 20

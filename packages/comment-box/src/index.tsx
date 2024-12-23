@@ -25,7 +25,7 @@ export function init(mountEle: string, opts: Options) {
       'owner',
       'clientId',
       'authCallbackUrl',
-      'issueKey',
+      'issueLabel',
       'repo',
     ])
   ) {
@@ -37,13 +37,3 @@ export function init(mountEle: string, opts: Options) {
     document.querySelector(mountEle || '#comment-box'),
   );
 }
-
-init('#comment-box', {
-  clientId: 'TBD',
-  authCallbackUrl: 'TBD',
-  issueKey: 'test',
-  owner: 'w4ngzhen',
-  repo: 'blog',
-  commentContentRenderStyle: 'pure',
-  commentLatestSize: 10,
-});

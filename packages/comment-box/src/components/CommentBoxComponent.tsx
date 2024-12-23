@@ -41,7 +41,7 @@ export const CommentBoxComponent = (props: CommentBoxComponentProps) => {
   } = useIssue({
     owner: options.owner,
     repo: options.repo,
-    issueKey: options.issueKey,
+    issueLabel: options.issueLabel,
   });
 
   // comments

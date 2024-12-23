@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc && gulp "
+    "build": "del-cli dist/**/* && tsc && gulp"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +19,7 @@
     "babel-loader": "^9.2.1",
     "compression-webpack-plugin": "^11.1.0",
     "css-loader": "^7.1.2",
+    "del-cli": "^6.0.0",
     "gulp": "^5.0.0",
     "gulp-less": "^5.0.0",
     "less": "^4.2.1",
