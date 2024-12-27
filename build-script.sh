@@ -1,3 +1,4 @@
+#!/bin/sh
 pnpm run build:all
 rm -rf ./dist
 mkdir ./dist
