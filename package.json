@@ -7,7 +7,7 @@
   "scripts": {
     "build:shared": "pnpm --filter comment-box-shared run build",
     "build:advance": "pnpm --filter comment-box-advance run build",
-    "build:lite": "pnpm --filter comment-box-advance run build",
+    "build:lite": "pnpm --filter comment-box-lite run build",
     "build:all": "pnpm run build:shared && pnpm run build:advance && pnpm run build:lite"
   },
   "keywords": [],
