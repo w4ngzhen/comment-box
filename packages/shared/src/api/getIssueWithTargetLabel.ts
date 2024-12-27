@@ -35,7 +35,9 @@ export async function getIssueWithTargetLabel(
   }
   const issues = (await resp.json()) as Issue[];
   if (!issues.length) {
-    throw new Error(`找不到仓库（${owner}/${repo}）下issue`);
+    throw new Error(
+      `找不到仓库（${owner}/${repo}）下issue，请联系博主创建issue`,
+    );
   }
   return issues[0];
 }
