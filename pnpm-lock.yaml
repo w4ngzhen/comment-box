@@ -8,7 +8,7 @@ importers:
 
   .: {}
 
-  packages/comment-box:
+  packages/comment-box-advance:
     dependencies:
       comment-box-shared:
         specifier: workspace:^
@@ -41,6 +41,9 @@ importers:
       css-loader:
         specifier: ^7.1.2
         version: 7.1.2(@rspack/core@1.1.8)(webpack@5.96.1)
+      del-cli:
+        specifier: ^6.0.0
+        version: 6.0.0
       less:
         specifier: ^4.2.1
         version: 4.2.1
@@ -87,6 +90,9 @@ importers:
       css-loader:
         specifier: ^7.1.2
         version: 7.1.2(@rspack/core@1.1.8)(webpack@5.96.1)
+      del-cli:
+        specifier: ^6.0.0
+        version: 6.0.0
       less:
         specifier: ^4.2.1
         version: 4.2.1

@@ -5,12 +5,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build:shared": "pnpm --filter comment-box-shared run build",
+    "build:advance": "pnpm --filter comment-box-advance run build",
+    "build:lite": "pnpm --filter comment-box-advance run build",
+    "build:all": "pnpm run build:shared && pnpm run build:advance && pnpm run build:lite"
   },
   "keywords": [],
   "author": "",
-  "license": "Apache-2.0",
-  "devDependencies": {
-  },
-  "dependencies": {
-  }
+  "license": "Apache-2.0"
 }

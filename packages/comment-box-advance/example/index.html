@@ -6,22 +6,22 @@
   <meta charset="UTF-8">
   <title>Custom insertion example</title>
   <!-- 样式文件 -->
-  <link href="comment-box.css" rel="stylesheet">
+  <link href="comment-box-advance.css" rel="stylesheet">
 </head>
 <body>
 <div id="comment-box"></div>
 <!-- 加载js -->
-<script src="comment-box.js"></script>
+<script src="comment-box-advance.js"></script>
 <!-- 加载js后，执行初始化 -->
 <script>
   (function run() {
-    if (!window.CommentBox) {
-      console.error('cannot find CommentBoxLite');
+    if (!window.CommentBoxAdvance) {
+      console.error('cannot find CommentBoxAdvance');
       return;
     }
     const clientId = '.....'; // <--- GitHub App clientId
     const authCallbackUrl = '......'; // <--- auth callback url
-    CommentBox.init('#comment-box', {
+    CommentBoxAdvance.init('#comment-box', {
       clientId,
       authCallbackUrl,
       issueLabel: 'test',

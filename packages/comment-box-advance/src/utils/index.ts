@@ -1,5 +1,5 @@
 export const getClassname = (className: string) => {
-  return `comment-box_${className}`;
+  return `comment-box-advance_${className}`;
 };
 
 export const baseClassSupplier = (moduleClass: string) => {

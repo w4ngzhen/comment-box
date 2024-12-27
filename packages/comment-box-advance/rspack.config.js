@@ -7,9 +7,9 @@ module.exports = {
     main: path.resolve(__dirname, 'src/index.tsx'),
   },
   output: {
-    filename: 'comment-box.js',
+    filename: 'comment-box-advance.js',
     path: path.resolve(__dirname, 'dist'),
-    library: 'CommentBox',
+    library: 'CommentBoxAdvance',
     libraryTarget: 'umd',
   },
   resolve: {
@@ -44,7 +44,7 @@ module.exports = {
       inject: false,
     }),
     new rspack.CssExtractRspackPlugin({
-      filename: 'comment-box.css',
+      filename: 'comment-box-advance.css',
     }),
   ],
   devServer: {
